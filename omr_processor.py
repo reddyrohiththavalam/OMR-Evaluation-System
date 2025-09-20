@@ -1,29 +1,28 @@
 import cv2
+import os
 import numpy as np
-from pyzbar.pyzbar import decode
-from PIL import Image
-
-def read_student_info_from_qr(img_path):
-    """Extract student ID and name from QR code on sheet"""
-    img = Image.open(img_path)
-    decoded = decode(img)
-    if decoded:
-        # Expect QR code format: "id:101;name:Ankit Sharma"
-        data = decoded[0].data.decode()
-        parts = data.split(";")
-        student_id = parts[0].split(":")[1].strip()
-        student_name = parts[1].split(":")[1].strip()
-        return student_id, student_name
-    return "Unknown", "Unknown"
 
 def evaluate_sheet(image_path, answer_key):
     """
     Evaluate a single OMR sheet.
+    Extracts student ID & name from filename:
+        expected format: studentID_studentName.png
+    Returns: student_id, student_name, score
     """
-    # --- Read student info from QR code ---
-    student_id, student_name = read_student_info_from_qr(image_path)
+    # Extract student info from filename
+    base = os.path.basename(image_path)          # e.g., "101_Ankit_Sharma.png"
+    name_part, _ = os.path.splitext(base)
+    parts = name_part.split("_", 1)
 
-    # --- Dummy bubble detection (replace with real logic) ---
+    if len(parts) == 2:
+        student_id = parts[0]
+        student_name = parts[1].replace("_", " ")
+    else:
+        student_id = parts[0]
+        student_name = "Unknown"
+
+    # --- Dummy OMR evaluation ---
+    # Replace with actual OpenCV bubble detection
     total_questions = len(answer_key)
     score = np.random.randint(0, total_questions + 1)
 
