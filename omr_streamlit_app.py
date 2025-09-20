@@ -1,3 +1,10 @@
+# ------------------------------------------------------------
+# © 2025 Sarthak Raut
+# Resume Relevance Check System
+# All rights reserved. Unauthorized copying, modification,
+# or distribution of this file is prohibited.
+# ------------------------------------------------------------
+
 # omr_streamlit_app.py
 import streamlit as st
 import zipfile
