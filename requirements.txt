@@ -2,3 +2,14 @@ streamlit
 opencv-python
 numpy
 pytesseract
+streamlit
+opencv-python
+numpy
+pandas
+Pillow
+streamlit
+opencv-python
+numpy
+pandas
+Pillow
+pytesseract
