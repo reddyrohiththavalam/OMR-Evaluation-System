@@ -3,25 +3,30 @@ import pandas as pd
 from utils import extract_zip, process_sheets
 
 st.set_page_config(page_title="OMR Evaluation System", layout="wide")
+st.title("📄 OMR Evaluation System with QR Student Info")
 
-st.title("📄 OMR Sheet Evaluation System")
-st.write("Upload a ZIP file containing scanned OMR sheets.")
+uploaded_zip = st.file_uploader("Upload ZIP of OMR Sheets", type=["zip"])
+uploaded_key = st.file_uploader("Upload Answer Key (CSV)", type=["csv"])
 
-uploaded_file = st.file_uploader("Upload ZIP of OMR Sheets", type=["zip"])
-answer_key_file = "answer_key.csv"
+if uploaded_zip and uploaded_key:
+    with open("temp.zip", "wb") as f:
+        f.write(uploaded_zip.read())
 
-if uploaded_file is not None:
-    with st.spinner("Processing sheets..."):
-        extracted_files = extract_zip(uploaded_file)
-        df = process_sheets(extracted_files, answer_key_file)
-        st.success("✅ Evaluation complete!")
+    with open("answer_key.csv", "wb") as f:
+        f.write(uploaded_key.read())
 
-        st.subheader("Results")
-        st.dataframe(df)
+    st.info("Processing sheets... ⏳")
 
-        st.download_button(
-            label="Download Results CSV",
-            data=df.to_csv(index=False),
-            file_name="results.csv",
-            mime="text/csv"
-        )
+    sheet_files = extract_zip("temp.zip", "input_sheets")
+    df = process_sheets(sheet_files, "answer_key.csv")
+
+    st.success("✅ Processing complete!")
+    st.dataframe(df)
+
+    csv = df.to_csv(index=False).encode("utf-8")
+    st.download_button(
+        "📥 Download Results CSV",
+        data=csv,
+        file_name="results.csv",
+        mime="text/csv"
+    )
