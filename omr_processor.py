@@ -1,22 +1,29 @@
 import cv2
-import os
 import numpy as np
+from pyzbar.pyzbar import decode
+from PIL import Image
+
+def read_student_info_from_qr(img_path):
+    """Extract student ID and name from QR code on sheet"""
+    img = Image.open(img_path)
+    decoded = decode(img)
+    if decoded:
+        # Expect QR code format: "id:101;name:Ankit Sharma"
+        data = decoded[0].data.decode()
+        parts = data.split(";")
+        student_id = parts[0].split(":")[1].strip()
+        student_name = parts[1].split(":")[1].strip()
+        return student_id, student_name
+    return "Unknown", "Unknown"
 
 def evaluate_sheet(image_path, answer_key):
     """
-    Dummy evaluation of OMR sheet.
-    Extracts student_id and name from filename instead of OCR.
+    Evaluate a single OMR sheet.
     """
-    img = cv2.imread(image_path)
-    if img is None:
-        raise FileNotFoundError(f"Image not found: {image_path}")
+    # --- Read student info from QR code ---
+    student_id, student_name = read_student_info_from_qr(image_path)
 
-    # --- Extract student info from filename ---
-    base = os.path.basename(image_path)
-    student_id = base.split("_")[0]
-    student_name = " ".join(base.split("_")[1:]).replace(".png", "")
-
-    # --- Fake bubble detection (replace with real logic) ---
+    # --- Dummy bubble detection (replace with real logic) ---
     total_questions = len(answer_key)
     score = np.random.randint(0, total_questions + 1)
 
