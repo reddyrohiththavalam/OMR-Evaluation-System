@@ -1,3 +1,10 @@
+# ------------------------------------------------------------
+# © 2025 Sarthak Raut
+# Resume Relevance Check System
+# All rights reserved. Unauthorized copying, modification,
+# or distribution of this file is prohibited.
+# ------------------------------------------------------------
+
 import os
 import zipfile
 import csv
